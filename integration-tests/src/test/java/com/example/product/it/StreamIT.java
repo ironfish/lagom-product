@@ -7,7 +7,6 @@ import akka.stream.javadsl.Sink;
 import akka.stream.javadsl.Source;
 import com.example.product.api.ProductMessage;
 import com.example.product.api.ProductService;
-import com.example.product.api.ProductService;
 import com.lightbend.lagom.javadsl.client.integration.LagomClientFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -45,11 +44,12 @@ public class StreamIT {
 
     @Test
     public void getProduct() throws Exception {
-        String answer = await(productService.get_product("foo").invoke());
-        assertEquals("Nice, foo!", answer);
-        await(productService.create_product("bar").invoke(new ProductMessage("Hi")));
-        String answer2 = await(productService.get_product("bar").invoke());
-        assertEquals("Hi, bar!", answer2);
+        String answer = await(productService.getProduct("foo").invoke());
+        assertEquals("Does not exist, 0.00, 0, foo", answer);
+
+        await(productService.createProduct("bar").invoke(new ProductMessage("Socks", "22.00", "10")));
+        String answer2 = await(productService.getProduct("bar").invoke());
+        assertEquals("Socks, 22.00, 10, bar", answer2);
     }
 
     @Test
@@ -61,7 +61,11 @@ public class StreamIT {
                 Source.from(Arrays.asList("a", "b", "c"))
                         .concat(Source.maybe())));
         List<String> messages = await(response.take(3).runWith(Sink.seq(), mat));
-        assertEquals(Arrays.asList("Nice, a!", "Nice, b!", "Nice, c!"), messages);
+
+        assertEquals(Arrays.asList(
+                "Does not exist, 0.00, 0, a",
+                "Does not exist, 0.00, 0, b",
+                "Does not exist, 0.00, 0, c"), messages);
     }
 
     private <T> T await(CompletionStage<T> future) throws Exception {

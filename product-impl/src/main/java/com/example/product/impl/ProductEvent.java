@@ -23,23 +23,35 @@ public interface ProductEvent extends Jsonable, AggregateEvent<ProductEvent> {
     @SuppressWarnings("serial")
     @Value
     @JsonDeserialize
-    public final class ProductCreated implements ProductEvent {
+    final class ProductCreated implements ProductEvent {
 
-        public final String name;
-        public final String message;
+        private final String id;
+        private final String name;
+        private final String cost;
+        private final String rating;
 
         @JsonCreator
-        public ProductCreated(String name, String message) {
+        ProductCreated(String id, String name, String cost, String rating) {
+            this.id = Preconditions.checkNotNull(id, "id");
             this.name = Preconditions.checkNotNull(name, "name");
-            this.message = Preconditions.checkNotNull(message, "message");
+            this.cost = Preconditions.checkNotNull(cost, "name");
+            this.rating = Preconditions.checkNotNull(rating, "name");
         }
 
-        public String getName() {
+        String getId() {
+            return id;
+        }
+
+        String getName() {
             return name;
         }
 
-        public String getMessage() {
-            return message;
+        String getCost() {
+            return cost;
+        }
+
+        String getRating() {
+            return rating;
         }
     }
 

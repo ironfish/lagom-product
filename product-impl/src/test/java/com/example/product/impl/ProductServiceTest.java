@@ -15,15 +15,16 @@ public class ProductServiceTest {
         withServer(defaultSetup().withCassandra(), server -> {
             ProductService service = server.client(ProductService.class);
 
-            String msg1 = service.get_product("Socks").invoke().toCompletableFuture().get(5, SECONDS);
-            assertEquals("Nice, Socks!", msg1);
+            String msg1 = service.getProduct("1234").invoke().toCompletableFuture().get(5, SECONDS);
+            assertEquals("Does not exist, 0.00, 0, 1234", msg1);
 
-            service.create_product("Socks").invoke(new ProductMessage("Cool")).toCompletableFuture().get(5, SECONDS);
-            String msg2 = service.get_product("Socks").invoke().toCompletableFuture().get(5, SECONDS);
-            assertEquals("Cool, Socks!", msg2);
+            service.createProduct("1234").invoke(
+                    new ProductMessage("Socks", "23.87", "7")).toCompletableFuture().get(5, SECONDS);
+            String msg2 = service.getProduct("1234").invoke().toCompletableFuture().get(5, SECONDS);
+            assertEquals("Socks, 23.87, 7, 1234", msg2);
 
-            String msg3 = service.get_product("Shirts").invoke().toCompletableFuture().get(5, SECONDS);
-            assertEquals("Nice, Shirts!", msg3);
+            String msg3 = service.getProduct("5555").invoke().toCompletableFuture().get(5, SECONDS);
+            assertEquals("Does not exist, 0.00, 0, 5555", msg3);
         });
     }
 }

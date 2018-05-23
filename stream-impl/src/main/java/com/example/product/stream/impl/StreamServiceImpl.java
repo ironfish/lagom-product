@@ -24,14 +24,14 @@ public class StreamServiceImpl implements StreamService {
     @Override
     public ServiceCall<Source<String, NotUsed>, Source<String, NotUsed>> directStream() {
         return products -> completedFuture(
-                products.mapAsync(8, name ->  productService.get_product(name).invoke()));
+                products.mapAsync(8, name ->  productService.getProduct(name).invoke()));
     }
 
     @Override
     public ServiceCall<Source<String, NotUsed>, Source<String, NotUsed>> autonomousStream() {
         return products -> completedFuture(
-                products.mapAsync(8, name -> repository.getMessage(name).thenApply( message ->
-                        String.format("%s, %s!", message.orElse("Hello"), name)
+                products.mapAsync(8, name -> repository.getProduct(name).thenApply(product ->
+                        String.format("%s, %s", product.orElse("Does not exits"), name)
                 ))
         );
     }

@@ -28,22 +28,22 @@ public class StreamRepository {
         // with an exception, then reinitialise the session and attempt to create the tables
         if (initialisedSession == null || initialisedSession.isCompletedExceptionally()) {
             initialisedSession = uninitialisedSession.executeCreateTable(
-                    "CREATE TABLE IF NOT EXISTS product (name text PRIMARY KEY, message text)"
+                    "CREATE TABLE IF NOT EXISTS product (id text PRIMARY KEY, name text, cost text, rating text)"
             ).thenApply(done -> uninitialisedSession).toCompletableFuture();
         }
         return initialisedSession;
     }
 
-    public CompletionStage<Done> updateMessage(String name, String message) {
+    CompletionStage<Done> updateProduct(String id, String name, String cost, String rating) {
         return session().thenCompose(session ->
-                session.executeWrite("INSERT INTO product (name, message) VALUES (?, ?)",
-                        name, message)
+                session.executeWrite("INSERT INTO product (id, name, cost, rating) VALUES (?, ?, ?, ?)",
+                        id, name, cost, rating)
         );
     }
 
-    public CompletionStage<Optional<String>> getMessage(String name) {
+    CompletionStage<Optional<String>> getProduct(String name) {
         return session().thenCompose(session ->
-                session.selectOne("SELECT message FROM product WHERE name = ?", name)
-        ).thenApply(maybeRow -> maybeRow.map(row -> row.getString("message")));
+                session.selectOne("SELECT name FROM product WHERE name = ?", name)
+        ).thenApply(maybeRow -> maybeRow.map(row -> row.getString("name")));
     }
 }
