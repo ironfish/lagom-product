@@ -13,26 +13,40 @@ import lombok.Value;
 })
 public interface ProductEvent {
 
+    String getId();
     String getName();
-    String getMessage();
+    String getCost();
+    String getRating();
 
     @Value
     final class ProductCreated implements ProductEvent {
-        final String name;
-        final String message;
+        private final String id;
+        private final String name;
+        private final String cost;
+        private final String rating;
 
         @JsonCreator
-        public ProductCreated(String name, String message) {
+        public ProductCreated(String id, String name, String cost, String rating) {
+            this.id = Preconditions.checkNotNull(id, "id");
             this.name = Preconditions.checkNotNull(name, "name");
-            this.message = Preconditions.checkNotNull(message, "message");
+            this.cost = Preconditions.checkNotNull(cost, "cost");
+            this.rating = Preconditions.checkNotNull(rating, "rating");
+        }
+
+        public String getId() {
+            return id;
         }
 
         public String getName() {
             return name;
         }
 
-        public String getMessage() {
-            return message;
+        public String getCost() {
+            return cost;
+        }
+
+        public String getRating() {
+            return rating;
         }
     }
 }

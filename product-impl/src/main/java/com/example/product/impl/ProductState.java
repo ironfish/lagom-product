@@ -9,22 +9,34 @@ import lombok.Value;
 @SuppressWarnings("serial")
 @Value
 @JsonDeserialize
-public final class ProductState implements CompressedJsonable {
+final class ProductState implements CompressedJsonable {
 
-    public final String message;
-    public final String timestamp;
+    private final String name;
+    private final String cost;
+    private final String rating;
+    private final String timestamp;
 
     @JsonCreator
-    public ProductState(String message, String timestamp) {
-        this.message = Preconditions.checkNotNull(message, "message");
+    ProductState(String name, String cost, String rating, String timestamp) {
+        this.name = Preconditions.checkNotNull(name, "name");
+        this.cost = Preconditions.checkNotNull(cost, "cost");
+        this.rating = Preconditions.checkNotNull(rating, "rating");
         this.timestamp = Preconditions.checkNotNull(timestamp, "timestamp");
     }
 
-    public String getMessage() {
-        return message;
+    String getName() {
+        return name;
     }
 
-    public String getTimestamp() {
+    String getCost() {
+        return cost;
+    }
+
+    String getRating() {
+        return rating;
+    }
+
+    String getTimestamp() {
         return timestamp;
     }
 }

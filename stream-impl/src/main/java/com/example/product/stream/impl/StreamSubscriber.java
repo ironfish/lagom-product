@@ -16,13 +16,16 @@ public class StreamSubscriber {
         productService.productEvents().subscribe()
                 // And subscribe to it with at least once processing semantics.
                 .atLeastOnce(
-                        // Create a flow that emits a Done for each message it processes
+                        // Create a flow that emits a Done for each name it processes
                         Flow.<ProductEvent>create().mapAsync(1, event -> {
 
                             if (event instanceof ProductEvent.ProductCreated) {
                                 ProductEvent.ProductCreated productCreated = (ProductEvent.ProductCreated) event;
-                                // Update the message
-                                return repository.updateMessage(productCreated.getName(), productCreated.getMessage());
+                                return repository.updateProduct(
+                                        productCreated.getId(),
+                                        productCreated.getName(),
+                                        productCreated.getCost(),
+                                        productCreated.getRating());
 
                             } else {
                                 // Ignore all other events

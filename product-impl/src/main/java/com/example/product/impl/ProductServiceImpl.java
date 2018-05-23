@@ -25,7 +25,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ServiceCall<NotUsed, String> get_product(String id) {
+    public ServiceCall<NotUsed, String> getProduct(String id) {
         return request -> {
             PersistentEntityRef<ProductCommand> ref = persistentEntityRegistry.refFor(ProductEntity.class, id);
             return ref.ask(new ProductCommand.GetProduct(id));
@@ -33,10 +33,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ServiceCall<ProductMessage, Done> create_product(String id) {
+    public ServiceCall<ProductMessage, Done> createProduct(String id) {
         return request -> {
             PersistentEntityRef<ProductCommand> ref = persistentEntityRegistry.refFor(ProductEntity.class, id);
-            return ref.ask(new ProductCommand.CreateProduct(request.message));
+            return ref.ask(new ProductCommand.CreateProduct(
+                    request.getName(),
+                    request.getCost(),
+                    request.getRating()));
         };
     }
 
@@ -59,7 +62,10 @@ public class ProductServiceImpl implements ProductService {
                                 (com.example.product.impl.ProductEvent.ProductCreated) eventAndOffset.first();
 
                         eventToPublish = new com.example.product.api.ProductEvent.ProductCreated(
-                                productCreated.getName(), productCreated.getMessage()
+                                productCreated.getId(),
+                                productCreated.getName(),
+                                productCreated.getCost(),
+                                productCreated.getRating()
                         );
                     } else {
                         throw new IllegalArgumentException("Unknown event: " + eventAndOffset.first());

@@ -9,10 +9,26 @@ import lombok.Value;
 @JsonDeserialize
 public class ProductMessage {
 
-    public final String message;
+    private final String name;
+    private final String cost;
+    private final String rating;
 
     @JsonCreator
-    public ProductMessage(String message) {
-        this.message = Preconditions.checkNotNull(message, "message");
+    public ProductMessage(String name, String cost, String rating) {
+        this.name = Preconditions.checkNotNull(name, "name");
+        this.cost = Preconditions.checkNotNull(cost, "cost");
+        this.rating = Preconditions.checkNotNull(rating, "rating");
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getCost() {
+        return cost;
+    }
+
+    public String getRating() {
+        return rating;
     }
 }

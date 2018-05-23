@@ -15,16 +15,27 @@ public interface ProductCommand extends Jsonable {
     @Value
     @JsonDeserialize
     final class CreateProduct implements ProductCommand, CompressedJsonable, PersistentEntity.ReplyType<Done> {
-        public final String message;
+        private final String name;
+        private final String cost;
+        private final String rating;
 
         @JsonCreator
-        public CreateProduct(String message) {
-            this.message = Preconditions.checkNotNull(message, "message");
+        CreateProduct(String name, String cost, String rating) {
+            this.name = Preconditions.checkNotNull(name, "name");
+            this.cost = Preconditions.checkNotNull(cost, "cost");
+            this.rating = Preconditions.checkNotNull(rating, "rating");
         }
 
-        @JsonCreator
-        public String getMessage() {
-            return message;
+        String getName() {
+            return name;
+        }
+
+        String getCost() {
+            return cost;
+        }
+
+        String getRating() {
+            return rating;
         }
     }
 
@@ -33,15 +44,14 @@ public interface ProductCommand extends Jsonable {
     @JsonDeserialize
     final class GetProduct implements ProductCommand, PersistentEntity.ReplyType<String> {
 
-        public final String name;
+        private final String name;
 
         @JsonCreator
-        public GetProduct(String name) {
+        GetProduct(String name) {
             this.name = Preconditions.checkNotNull(name, "name");
         }
 
-//        @JsonCreator
-        public String getName() {
+        String getName() {
             return name;
         }
     }
